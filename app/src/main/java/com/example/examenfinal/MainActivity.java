@@ -1,9 +1,5 @@
 package com.example.examenfinal;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -18,8 +14,11 @@ import android.util.Size;
 import android.view.Surface;
 import android.view.View;
 import android.widget.TextView;
-
 import com.example.examenfinal.ml.ModeloEdificio;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.mlkit.vision.text.Text;
@@ -215,10 +214,13 @@ public class MainActivity extends AppCompatActivity implements OnSuccessListener
             List<Category> probability = outputs.getProbabilityAsCategoryList();
             Collections.sort(probability, new CategoryComparator());
             String res="";
-            for (int i = 0; i < probability.size(); i++)
-                res = res + probability.get(i).getLabel() +  " " +  probability.get(i).getScore()*100 + " % \n";
-            edificio =  probability.get(0).getLabel();
-            txtResults.setText(edificio);
+          //validación para mostrar nombre de edificio mayor al 50% de exactitud
+           if (probability.size()>0&&probability.get(0).getScore()>=0.50)
+            {
+                res=probability.get(0).getLabel();
+            }else
+                res="Identificando Facultad";
+            txtResults.setText(res);
         } catch (IOException e) {
             txtResults.setText("Error al procesar Modelo");
         }
